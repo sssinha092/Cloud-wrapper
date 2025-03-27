@@ -1,0 +1,277 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: VM Operations
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.0.7@11ec0b1909200f62b6ebf2cec1da981a9071d11c1ee0e2ef332ce89bcffa2544
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: start
+        targetType: llm
+      id: 1741774709516-llm
+      selected: false
+      source: '1741774709516'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: http-request
+      id: llm-source-1742479883940-target
+      source: llm
+      sourceHandle: source
+      target: '1742479883940'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: http-request
+        targetType: code
+      id: 1742479883940-source-1742484258009-target
+      source: '1742479883940'
+      sourceHandle: source
+      target: '1742484258009'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: answer
+      id: 1742484258009-source-17421110535620-target
+      source: '1742484258009'
+      sourceHandle: source
+      target: '17421110535620'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Start
+        type: start
+        variables: []
+      height: 54
+      id: '1741774709516'
+      position:
+        x: -204.9067793007036
+        y: 198.01114211012356
+      positionAbsolute:
+        x: -204.9067793007036
+        y: 198.01114211012356
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gpt-3.5-turbo-0125
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: 490357ef-13f3-4b8e-8305-b37acd4cd4d6
+          role: system
+          text: "User wants to manage virtual machines in the cloud. Identify the\
+            \ action from the following: -\n \"create\" → Create a new VM. \n \"restart\"\
+            \ → Restart an existing VM.\n \"status\" → Check the status of a VM.\n\
+            \ Extract key details and return structured JSON:\n { \n\"provider\":\
+            \ \"{{provider}}\", \n\"vmId\": \"{{vmId}}\", \n\"region\": \"{{region}}\"\
+            ,\n \"cpu\": \"{{cpu}}\", \n\"ram\": \"{{ram}}\".\n \"action\": \"{{action}}\"\
+            \n }\nEnsure \"action\" is always one of: \"create\", \"restart\", or\
+            \ \"status\".\nConvert \"provider\" to uppercase, and it must be either\
+            \ \"AZURE\" or \"AWS\" (correct any variations like \"azure\" or \"Aws\"\
+            ).\n\"vmId\" must be the virtual machine identifier.\n\"region\" should\
+            \ specify the deployment region.\n\"cpu\" must indicate the number of\
+            \ CPUs.\n\"ram\" should specify the RAM size in GB.\n"
+        selected: false
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: llm
+      position:
+        x: 67.78169004913968
+        y: 198.01114211012356
+      positionAbsolute:
+        x: 67.78169004913968
+        y: 198.01114211012356
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1742484258009.result#}}'
+        desc: ''
+        selected: false
+        title: Answer
+        type: answer
+        variables: []
+      height: 104
+      id: '17421110535620'
+      position:
+        x: 1249.5794215394058
+        y: 187.05023577307958
+      positionAbsolute:
+        x: 1249.5794215394058
+        y: 187.05023577307958
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data:
+          - id: key-value-287
+            key: ''
+            type: text
+            value: '{{#llm.text#}}'
+          type: json
+        desc: ''
+        headers: ''
+        method: post
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 'VM operation tool '
+        type: http-request
+        url: https://69b620b276b07fea61b8348f7ab4fc6e.serveo.net/api/vm/execute
+        variables: []
+      height: 152
+      id: '1742479883940'
+      position:
+        x: 450.2680032027157
+        y: 128.3388988211147
+      positionAbsolute:
+        x: 450.2680032027157
+        y: 128.3388988211147
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import json\n\ndef main(body: str) -> dict:\n    try:\n        # Parse\
+          \ the JSON string in body\n        parsed_body = json.loads(body)\n    \
+          \    \n        # Check if it's an error response\n        if \"error\" in\
+          \ parsed_body:\n            return {\n                \"error\": f\"Error\
+          \ {parsed_body.get('status', '')}: {parsed_body.get('error', 'Unknown Error')}\"\
+          ,\n                \"path\": parsed_body.get(\"path\", \"Unknown Path\"\
+          )\n            }\n        \n        # Extract success message details\n\
+          \        arg1 = parsed_body.get(\"message\", \"No message available\")\n\
+          \        arg2 = parsed_body.get(\"vmId\", \"No VM ID available\")\n\n  \
+          \      return {\n            \"result\": arg1 + \" \" + str(arg2)\n    \
+          \    }\n    \n    except json.JSONDecodeError:\n        return {\"error\"\
+          : \"Invalid JSON format\"}\n"
+        code_language: python3
+        desc: ''
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: false
+        title: Code
+        type: code
+        variables:
+        - value_selector:
+          - '1742479883940'
+          - body
+          variable: body
+      height: 54
+      id: '1742484258009'
+      position:
+        x: 879.1447123841674
+        y: 177.73924895847978
+      positionAbsolute:
+        x: 879.1447123841674
+        y: 177.73924895847978
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 153.6365589671573
+      y: 65.80561659253847
+      zoom: 0.779800942857561
